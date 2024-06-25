@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/bootcamp-day2-backend"
+]
+resolver = "2"
