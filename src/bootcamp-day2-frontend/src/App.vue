@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { bootcamp_day2_backend } from 'declarations/bootcamp-day2-backend/index';
+import Blog from "./components/Blog.vue";
 let greeting = ref('');
 
 async function handleSubmit(e) {
@@ -25,6 +26,7 @@ async function handleSubmit(e) {
       <input type="number" id="num">
       <button type="submit">Click Me!</button>
     </form>
+    <Blog />
     <section id="greeting">{{ greeting }}</section>
   </main>
 </template>
