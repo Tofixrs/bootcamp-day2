@@ -1,38 +1,64 @@
 <template>
     <div>
-        siema blog!
-        <div v-for="wpis in wpisy">
-            <h5>{{ wpis.name }}</h5>
-            <p>{{ wpis.content }}</p>
+        <div class="flex">
+            <h1 class="text-center text-5xl p-5 flex-grow">Mój Blog</h1>
+            <button @click="pobierzWpisy" class="bg-blue-900 py-1 px-5 rounded-md text-white m-5">Refresh</button>
         </div>
-        <div>
-            <h1>Dodaj wpis:</h1>
-            <div>
-                <label for="name">Nazwa użytkownika:</label>
-                <input type="text" v-model="name" id="name">
+        <div v-for="(wpis, index) in wpisy" class="py-5">
+            <div class="bg-gray-600 p-5 my-2 rounded-2xl">
+                <h1 class="text-2xl">{{ wpis.name }}</h1>
+                <p class="text-wrap text-sm" :id="`blog_content${index}`" :style="index == editing ? `display: none` : `display: block`">{{ wpis.content }}</p>
+                <textarea class="p-2" id="" :style="index == editing ? `display: block` : `display: none`" v-model="edit_content"></textarea>
+                <div class="flex justify-center">
+                    <button class="bg-gray-800 py-1 px-5 mr-5 rounded-md text-sm" @click="edytujWpis(index, wpis.content)"
+                        :style="index == editing ? `display: none` : `display: inline-block`">Edytuj</button>
+                    <button class="bg-gray-800 py-1 px-5 mr-5 rounded-md text-sm" @click="usunWpis(index)" :style="index == editing ? `display: none` : `display: inline-block`">Usuń wpis</button>
+                    <button class="bg-gray-800 py-1 px-5 mr-5 rounded-md text-sm" @click="submitEdit()" :style="index == editing ? `display: inline-block` : `display: none`">Zakończ
+                        edytowanie</button>
+                </div>
             </div>
-            <div>
-                <label for="content">Treść:</label>
-            </div>
-            <div>
-                <textarea name="content" id="content" v-model="content"></textarea>
-            </div>
-            <button @click="dodajWpis">Wyślij</button>
+        </div>
+        <div class="border-gray-500 border-solid border-2 p-5 rounded-lg">
+            <fieldset>
+                <legend class="text-3xl">Dodaj wpis:</legend>
+                <div class="py-2">
+                    <div class="py-5">
+                        <label for="name" class="mr-5">Nazwa użytkownika:</label>
+                        <input type="text" v-model="name" id="name">
+                    </div>
+                    <div>
+                        <textarea name="content" class="w-full" v-model="content"></textarea>
+                    </div>
+                </div>
+                <button class="bg-blue-900 py-1 px-5 rounded-md text-white m-" @click="dodajWpis">Wyślij</button>
+            </fieldset>
         </div>
     </div>
 
-    <button @click="pobierzWpisy">Refresh</button>
+    <div class="grid place-items-center p-5">
+    </div>
 </template>
 
-<script>
-import { bootcamp_day2_backend } from 'declarations/bootcamp-day2-backend/index';
+<script lang="ts">
+import type { Wpis } from '../../../declarations/bootcamp-day2-backend/bootcamp-day2-backend.did';
+import { bootcamp_day2_backend } from '../../../declarations/bootcamp-day2-backend/index';
+
+interface Data {
+    wpisy: Wpis[],
+    name: string,
+    content: string,
+    editing: number | null,
+    edit_content: string
+}
 
 export default {
-    data() {
+    data(): Data {
         return {
             wpisy: [],
             name: "",
-            content: ""
+            content: "",
+            editing: null,
+            edit_content: ""
         }
     },
     methods: {
@@ -40,8 +66,32 @@ export default {
             this.wpisy = await bootcamp_day2_backend.odczytaj_wpisy()
         },
         async dodajWpis() {
-            await bootcamp_day2_backend.dodaj_wpis(this.name, this.content);
+            const content = this.content;
+            const name = this.name;
+
+            this.wpisy.push({ name, content });
+            this.content = "";
+
+            await bootcamp_day2_backend.dodaj_wpis(name, content);
             await this.pobierzWpisy()
+        },
+        async usunWpis(id: number) {
+            this.wpisy = this.wpisy.filter((_, index) => index != id);
+            await bootcamp_day2_backend.usun_wpis(BigInt(id));
+            await this.pobierzWpisy();
+        },
+        edytujWpis(id: number, wpis: string) {
+            this.editing = id;
+            this.edit_content = wpis;
+        },
+        async submitEdit() {
+            const content = this.edit_content;
+            const id = this.editing!;
+            this.wpisy[id].content = content;
+            this.editing = null;
+            this.edit_content = "";
+            await bootcamp_day2_backend.edit_wpis(BigInt(id), content)
+            this.pobierzWpisy();
         }
     },
     mounted() {

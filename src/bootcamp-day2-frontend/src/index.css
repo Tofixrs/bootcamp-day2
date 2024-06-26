@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    input[type="text"], textarea {
+        @apply border-black;
+        @apply border-[1px];
+        @apply border-solid;
+        @apply rounded-md;
+        @apply text-black;
+    }
+    body {
+        @apply bg-gray-900;
+        @apply text-white;
+    }
+}

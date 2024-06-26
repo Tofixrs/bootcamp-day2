@@ -4,7 +4,8 @@ type Wpis = record {
 };
 
 service : {
-    "greet": (text, int8) -> (text) query;
     "dodaj_wpis": (text, text) -> ();
     "odczytaj_wpisy": () -> (vec Wpis) query;
+    "usun_wpis": (nat64) -> ();
+    "edit_wpis": (nat64, text) -> ();
 };

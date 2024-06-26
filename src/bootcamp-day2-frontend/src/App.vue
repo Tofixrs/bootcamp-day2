@@ -16,17 +16,9 @@ async function handleSubmit(e) {
 </script>
 
 <template>
-  <main>
-    <img src="/logo2.svg" alt="DFINITY logo" />
+  <main class="p-5">
     <br />
     <br />
-    <form action="#" @submit="handleSubmit">
-      <label for="name">Enter your name: &nbsp;</label>
-      <input id="name" alt="Name" type="text" />
-      <input type="number" id="num">
-      <button type="submit">Click Me!</button>
-    </form>
     <Blog />
-    <section id="greeting">{{ greeting }}</section>
   </main>
 </template>
