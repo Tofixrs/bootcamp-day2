@@ -1,11 +1,12 @@
 type Wpis = record {
     name: text;
     content: text;
+    id: text;
 };
 
 service : {
     "dodaj_wpis": (text, text) -> ();
     "odczytaj_wpisy": () -> (vec Wpis) query;
-    "usun_wpis": (nat64) -> ();
-    "edit_wpis": (nat64, text) -> ();
+    "usun_wpis": (text) -> ();
+    "edit_wpis": (text, text) -> ();
 };
